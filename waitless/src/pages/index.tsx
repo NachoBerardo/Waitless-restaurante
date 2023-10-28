@@ -1,355 +1,157 @@
-import { Inter } from "next/font/google";
-import { type } from "os";
-import { useEffect, useState } from "react";
-import ScrollBar from "../components/scrollbar";
-import HeaderMenu from "../components/headerMenu";
-import PopUp from "../components/PopUp";
-import FooterMenu from "../components/footerMenu";
-import ContenidoPedido from "../components/ContenidoPedido";
-import { useQuery } from '@tanstack/react-query';
-import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
-import axios from "axios";
-import { useQueryClient } from "@tanstack/react-query";
-import { table } from "console";
+import { useState } from "react";
+import Pedidos from "../components/Pedidos";
+import DropDownRestaurante from "../components/DropDownRestaurante";
 
-export interface MenuTypes {
-  idFood: number;
-  category: string;
-  sideDish: boolean;
-  price: string;
-  name: string;
-  description: string;
-  image: string;
+type TipoPedido= {
+    pedidos: string[];
+    hora: string;
+    id: number;
 }
+const handleDragEnterBasura=()=>{}
+  
+const PantallaRestaurante:React.FC = () => {
+    const [pedidosPendientes, setPedidosPendiente] = useState<TipoPedido[]>([
+        { pedidos: ['Empanada', 'Churrasco'], hora: '12:15', id: 1 },
+        { pedidos: ["Empanada", "Churrasco", "Provoleta", "a", "Volcan de chocolate con helado"], hora: '12:20', id: 2 },
+        { pedidos: ["Carne", "Churrasco"], hora: '12:25', id: 3 },
+        { pedidos: ["Empanada", "Carne"], hora: '12:30', id: 4 },
+        { pedidos: ["Empanada", "Flan"], hora: '12:35', id: 5 },
+        { pedidos: ["Agua"], hora: '12:40', id: 6 },
+        { pedidos: ["Empanada", "Vegano"], hora: '12:45', id: 7 },
+        { pedidos: ["Provoleta", "Churrasco"], hora: '12:50', id: 8 },
+        { pedidos: ["Empanada", "Churrasco", "Provoleta", "a", "Volcan de chocolate con helado", "Ensalada de papa y huevo"], hora: '12:55', id: 9 },
+    ]);
 
-interface CommandData {
-  idCommand: number;
-  sendedAt: Date;
-  total: number;
-  tableId: number;
-}
+    const [pedidosEnproceso, setpedidosEnproceso] = useState<TipoPedido[]>([
+        { pedidos: ['Provoleta", "Papas fritas'], hora: '1:15', id: 11 },
+        { pedidos: ["Coca", "Helado", "Ensalada de fruta", "Budin de pan", "Volcan de chocolate con helado y dulce de leche aaaaaa"], hora: '1:20', id: 12 },
+        { pedidos: ["Provoleta", "Churrasco"], hora: '1:25', id: 13 },
+    ]);
 
-interface FoodOrder {
-  foodName: string,
-  foodId: number,
-  amount: number
-}
+    const [pedidosCompletados, setpedidosCompletados] = useState<TipoPedido[]>([
+        { pedidos: ["Pure", "Milanesa"], hora: '2:15', id: 21 },
+        { pedidos: ["pollo", "Pasto"], hora: '2:20', id: 22 },
+        { pedidos: ["Papas fritas", "Carne al horno"], hora: '2:25', id: 32 },
+        { pedidos: ["a", "b"], hora: '2:30', id: 24 },
 
-const inter = Inter({ subsets: ["latin"] });
-
-export default function Menu() {
-  const [menu, setMenu] = useState<MenuTypes[]>([]);
-  const [pedido, setPedido] = useState<FoodOrder[]>([]);
-
-  const getAllMenus = async () => {
-    try {
-      return await axios.get("https://perfect-teal-beetle.cyclic.cloud/menu").then((response) => {
-        console.log(response.data.data)
-        return response.data.data
-      }).catch((err) => console.log(err))
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-  const getAllCommand = async () => {
-    try {
-      return await axios.get("https://perfect-teal-beetle.cyclic.cloud/command").then((response) => {
-        console.log(response.data.data)
-        return response.data.data
-      }).catch((err) => console.log(err))
-    } catch (error) {
-      console.log(error)
-    }
-  }
-  // const getCommandByTable = async (table: number): Promise<CommandData> => {
-  //   try {
-  //     const response = await axios.get<CommandData>(`https://perfect-teal-beetle.cyclic.cloud/command/${table}`);
-  //     return response.data;
-  //   } catch (error) {
-  //     console.error(error);
-  //     throw error;
-  //   }
-  // };
-  //console.log("This is the command of the table 1", getCommandByTable(1));
-
-  const getCommandByTable = async (table: number, fieldName?: string) => {
-    try {
-      const response = await axios.get(`https://perfect-teal-beetle.cyclic.cloud/command/${table}`);
-      if (response.status === 200) {
-        const item = response.data;
-        if (fieldName) {
-          const fieldValue = item[fieldName];
-          return fieldValue;
-        } else {
-          return item;
-        }
-      }
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
-  };
-  const [numeroMesa, setNumeroMesa] = useState(0);
-
-  //Como llamar la funcion ns si te sirve Nacho :）
-
-
-  // Queries
-  const {
-    data: allMenu,
-    isLoading: isMenuLoading,
-    isError: isMenuError
-  } = useQuery({ queryKey: ['menu'], queryFn: getAllMenus })
-
-  const {
-    data: Command,
-    isLoading: isCommandLoading,
-    isError: isCommandError,
-  } = useQuery({ queryKey: ['command'], queryFn: getAllCommand })
-
-  const separateMenuItemsByCategory = (menuItems: MenuTypes[]): MenuTypes[][] => {
-    let platoEntrada: MenuTypes[] = [];
-    let platoPrincipal: MenuTypes[] = [];
-    let platoPostre: MenuTypes[] = [];
-
-    //console.log(menuItems);
-
-    const entradas = menuItems.filter((item) => item.category === "entrada");
-    const principales = menuItems.filter((item) => item.category === "plato principal");
-    const postres = menuItems.filter((item) => item.category === "postre");
-
-    return [entradas, principales, postres];
-  };
-
-  const [combinedArray, setCombinedArray] = useState<MenuTypes[][]>();
-
-  useEffect(() => {
-    if (allMenu)
-      setCombinedArray(separateMenuItemsByCategory(allMenu));
-  }, [allMenu]);
-
-
-  const MaxLength = (description: string, MaxCharcters: number): string => {
-    if (description.length <= MaxCharcters) {
-      return description;
-    }
-    let descrptionShort = description.substring(0, MaxCharcters);
-    const LastSpace = descrptionShort.lastIndexOf(" ");
-
-    if (LastSpace !== -1) {
-      descrptionShort = descrptionShort.substring(0, LastSpace);
-    } else {
-      return descrptionShort;
-    }
-
-    return descrptionShort + " ...";
-  };
-
-  const [showPopUP, setShowPopUP] = useState(false);
-  const [comanda, setComanda] = useState(false);
-  const [showMenu, setShowMenu] = useState(true);
-  const [showPedido, setShowPedido] = useState(false);
-  const [showFotterMenu, setShowFotterMenu] = useState(false);
-  const [a, seta] = useState(true);
-  const [showRegistro, setshowRegistro] = useState(true);
-  const [keyPlato, setKeyPlato] = useState(0);
-  const [arrayUsed, setarrayUsed] = useState(0);
-  const [nombre, setNombre] = useState('');
-  const [nombreError, setNombreError] = useState('');
-  const [numeroMesaError, setNumeroMesaError] = useState('');
-
-
-  const handleclick = (key: number, estado: boolean, array: number) => {
-    setShowPopUP(estado);
-    setShowMenu(!estado)
-    setKeyPlato(key);
-    setarrayUsed(array);
-  };
-
-  const handleClickArrowBack = (pedido: boolean, Menu: boolean) => {
-    setShowPedido(pedido);
-    setShowMenu(Menu);
-
-  }
-
-  const handleClickRegistro = () => {
-    console.log(numeroMesa)
-    if (nombre === '') {
-      setNombreError('El nombre es obligatorio');
-    } else {
-      setNombreError('');
-    }
-
-    if (numeroMesa === 0 || Number.isNaN(numeroMesa)) {
-      setNumeroMesaError('El número de mesa es obligatorio');
-    } else {
-      setNumeroMesaError('');
-    }
-    if (numeroMesa < 0) {
-      setNumeroMesaError('Numero invalido');
-    } 
-
-    if (nombre !== '' && !Number.isNaN(numeroMesa) && numeroMesa !== 0 && numeroMesa>0) {
-      // Data is valid; you can proceed with whatever you need to do
-      console.log('Nombre:', nombre);
-      console.log('Numero de mesa:', numeroMesa);
-      setShowMenu(true);
-      setshowRegistro(false);
-      getCommandByTable(numeroMesa, "total")
-        .then(data => {
-          if (data !== null) {
-            console.log(`Field Value: $${data}`);
-            setShowFotterMenu(true);
-          }
-        })
-        .catch(error => {
-          console.error(error);
-          seta(false)
-        });
-    }
-  }
-  if (a == false) {
-    getCommandByTable(numeroMesa, "total")
-      .then(data => {
-        if (data !== null) {
-          console.log(`Field Value: $${data}`);
-          setShowFotterMenu(true);
-        }
-      })
-      .catch(error => {
-        console.error(error);
-      });
-  }
-
-  return (
-    <main className="">
-      <div className="h-screen w-screen pb-[7px] bg-background overflow-x-hidden no-scrollbar" id="general">
-        {/* {isMenuLoading && <h1 className="animate-spin text-black">Loading</h1>}
-        {isMenuError && <h1 className="text-RojoPedido animate-bounce">Error</h1>} */}
-        {showRegistro ? (
-          <div className="grid w-full h-full absolute z-40 backdrop-blur-sm backdrop-brightness-90 justify-center content-center ">
-            <div className=" bg-white rounded-lg m-10 px-9 grid justify-center ">
-              <h4 className="text-black mt-8 mb-7">Ingresar los siguientes datos para ser atendido:</h4>
-              <input type="text" className="w-full pl-2 h-10 border-BorderRegister rounded-lg border-2 bg-input text-black outline-none" placeholder="Nombre" value={nombre} onChange={(e) => setNombre(e.target.value)} />
-              {nombreError && <div className="text-RojoPedido ml-1 ">{nombreError}</div>}
-              <input type="number" className="w-full pl-2 h-10 mt-4 border-BorderRegister rounded-lg border-2 bg-input text-black outline-none placeholder:" placeholder="Número de mesa" onChange={(e) => setNumeroMesa(e.target.valueAsNumber)} />
-              {numeroMesaError && <div className="text-RojoPedido ml-1">{numeroMesaError}</div>}
-              <button className="bg-btngreen rounded-2xl right-0 mt-10 h-[38px] w-full mb-11" onClick={handleClickRegistro}>Enviar</button>
+    ]);
+    const[pendientes, setPendientes] = useState(true);
+    const[enProceso, setEnProceso] = useState(true);
+    const[completados, setCompletados] = useState(true);
+    const[moverse, setMoverse] = useState(true);
+    
+    return <main className="no-scrollbar">
+    <div className="w-full min-h-screen h-full bg-white no-scrollbar">
+        <header className="h-fit w-full flex shadow-lg items-center">
+            <div className="pl-8 flex items-center h-full w-fit py-[10px] xl:py-5 ">
+                <img src="/TresLineas.svg" className="w-16 h-16" />
+                <button className="px-[84px]">
+                    <h3 className="text-black px-7 py-4 rounded-lg hover:bg-LineaPedido active:bg-ActiveHeaderRestaurante">Comandas</h3>
+                </button>
+                <button className="pr-[84px] ">
+                    <h3 className="text-black px-7 py-4 rounded-lg hover:bg-LineaPedido active:bg-ActiveHeaderRestaurante">Resumen</h3>
+                </button>
+                <button className="">
+                    <h3 className="text-black px-7 py-4 rounded-lg hover:bg-LineaPedido active:bg-ActiveHeaderRestaurante">Pedidos</h3>
+                </button>
             </div>
-          </div>
-        ) : (<></>)}
-        {showPopUP && !isMenuLoading && !isMenuError &&
-          <PopUp
-            combinedArray={combinedArray!}
-            arrayUsed={arrayUsed}
-            keyPlato={keyPlato}
-            pedido={pedido}
-            setShowPopUP={setShowPopUP}
-            setShowMenu={setShowMenu}
-            setPedido={setPedido}
-          ></PopUp>
-        }
-        {!isMenuLoading && !isMenuError && combinedArray && showMenu ? (
-          <>
-            <HeaderMenu />
-            <ScrollBar />
+            <img src="/Logo.svg" className="h-[72px] w-24 absolute right-0 mr-8">
 
-            <h3 className="text-black text mt-4 ml-4" id="entradas">
-              Entradas
-            </h3>
-            <div className="grid grid-cols-2 gap-x-2 justify-center m-auto w-[360px]" id="div1">
-              {combinedArray[0].map((comida, key) => (
-                <div
-                  onClick={(event) => handleclick(key, true, 0)}
-                  className="container m-2 h-fit content-center"
-                  key={key}
-                >
-                  <div className="h-[105px] w-[150px] mx-2 mt-1 overflow-hidden grid content-center">
-                    <img
-                      src={comida.image}
-                      alt=""
-                      className="rounded-lg min-h-full min-w-full"
-                    >
-                    </img>
-                  </div>
-                  <div className="pl-3 max-w-[160px] ">
-                    <h5 className=" text-black leading-snug overflow-hidden">
-                      {comida.name}
-                    </h5>
-                    <p className="text-populetter leading-snug pb-2 max-h- overflow-hidden text-ellipsis">
-                      {MaxLength(comida.description, 35)}
-                    </p>
-                  </div>
+            </img>
+        </header>
+        <DropDownRestaurante setPendientes={setPendientes} setCompletados={setCompletados} setEnProceso={setEnProceso} setMoverse={setMoverse}/>
+                
+        <div className="grid grid-cols-3 justify-around m-auto monitor:pt-6 xl:pt-11 z-10 ">
+            <div className="ml-20">
+            {pendientes ?(
+                <div className="custombp:h-[660px] notebook:h-[570px]  border-4 rounded-[10px] border-solid border-BorderPedidosRestaurante overflow-scroll no-scrollbar">
+                    <h4 className="text-BorderPedidosRestaurante pl-5 pt-5 pb-11">Pendientes</h4>
+                    {pedidosPendientes.map((pedidosMap, key)=>(
+                            <div key={key}>
+                                <Pedidos 
+                                setPedidoActual={setPedidosPendiente}
+                                pedidoEntero={pedidosPendientes} 
+                                pedidoActual={pedidosMap} 
+                                pedidos={pedidosMap.pedidos} 
+                                id={pedidosMap.id} 
+                                hora={pedidosMap.hora}
+                                color={"rojo"} 
+                                key={key}
+                                setPedidoDerecha={setpedidosEnproceso}
+                                setPedidoIzquierda={setpedidosCompletados}
+                                PedidoDerecha = {true}
+                                PedidoIzquierda = {false}
+                                moverse={moverse}
+                                ></Pedidos>
+                            </div>
+                    ))}
                 </div>
-              ))}
-            </div>
-            <h3 className="text-black text mt-4 ml-4" id="principales" >
-              Platos principales
-            </h3>
+            ):(<></>)}
 
-            <div className="grid grid-cols-2 gap-x-2 justify-center m-auto w-[360px]">
-              {combinedArray[1].map((comida, key) => (
-                <div
-                  onClick={(event) => handleclick(key, true, 1)}
-                  className="container m-2 h-fit content-center"
-                  key={key}
-                >
-                  <div className="h-[105px] w-[150px] mx-2 mt-1 overflow-hidden grid content-center">
-                    <img
-                      src={comida.image}
-                      alt=""
-                      className="rounded-lg min-h-full min-w-full"
-                    />
-                  </div>
-                  <div className="pl-3 max-w-[160px] ">
-                    <h5 className=" text-black leading-snug overflow-hidden">
-                      {comida.name}
-                    </h5>
-                    <p className="text-populetter leading-snug pb-2 max-h- overflow-hidden text-ellipsis">
-                      {MaxLength(comida.description, 35)}
-                    </p>
-                  </div>
-                </div>
-              ))}
             </div>
-            <h3 className="text-black text mt-4 ml-4" id="postres">
-              Postres
-            </h3>
-            <div className="grid grid-cols-2 gap-x-2 justify-center m-auto w-[360px]">
-              {combinedArray[2].map((comida, key) => (
-                <div
-                  onClick={(event) => handleclick(key, true, 2)}
-                  className="container m-2 h-fit content-center pb-28"
-                  key={key}
-                >
-                  <div className="h-[105px] w-[150px] mx-2 mt-1 overflow-hidden grid content-center">
-                    <img
-                      src={comida.image}
-                      alt=""
-                      className="rounded-lg min-h-full min-w-full"
-                    />
-                  </div>
-                  <div className="pl-3 max-w-[160px] ">
-                    <h5 className=" text-black leading-snug overflow-hidden">
-                      {comida.name}
-                    </h5>
-                    <p className="text-populetter leading-snug pb-2 max-h- overflow-hidden text-ellipsis">
-                      {MaxLength(comida.description, 35)}
-                    </p>
-                  </div>
-                </div>
-              ))}
+            <div className="ml-6 mr-6 ">
+                {enProceso ?(
+                    <div className="custombp:h-[660px] notebook:h-[570px]  border-4 rounded-[10px] border-solid border-BorderPedidosRestaurante overflow-scroll no-scrollbar">
+                        <h4 className="text-BorderPedidosRestaurante pl-5 pt-5 pb-11">En Proceso</h4>
+                        {pedidosEnproceso.map((pedidosMap, key)=>(
+                                <div key={key}>
+                                    <Pedidos setPedidoActual={setpedidosEnproceso} 
+                                    pedidoActual={pedidosMap}
+                                    pedidoEntero={pedidosEnproceso}
+                                    pedidos={pedidosMap.pedidos} 
+                                    id={pedidosMap.id} 
+                                    hora={pedidosMap.hora} 
+                                    color={"amarillo"} 
+                                    key={key}
+                                    setPedidoDerecha={setpedidosCompletados}
+                                    setPedidoIzquierda={setPedidosPendiente}
+                                    PedidoDerecha = {true}
+                                    PedidoIzquierda = {true}
+                                    moverse={moverse}
+                                    ></Pedidos>
+                                </div>
+                        ))}
+                    </div>
+                ):( <></>)}
+                
             </div>
-            {showFotterMenu ? (<FooterMenu setShowPedido={setShowPedido} setShowMenu={setShowMenu} setShowPedidoEnviado={setShowMenu} EstadoPedidoEnviado={false} EstadoPedido={true} EstadoMenu={false} txtBoton="Ver Pedido" />) : (<></>)}
-          </>
-        ) : (<></>)}
-        {showPedido ? (
-          <>
-            <ContenidoPedido setShowMenu={setShowMenu} setShowPedido={setShowPedido} />
-          </>
-        ) : (<></>)}
-      </div>
-    </main >
-  );
+            <div className="mr-20">
+            {completados ?(
+                <div className="custombp:h-[660px] notebook:h-[570px]  border-4 rounded-[10px] border-solid border-BorderPedidosRestaurante overflow-scroll no-scrollbar">
+                    <h4 className="text-BorderPedidosRestaurante pl-5 pt-5 pb-11">Completados</h4>
+                    {pedidosCompletados.map((pedidosMap, key)=>(
+                            <div key={key}>
+                                <Pedidos setPedidoActual={setpedidosCompletados}
+                                    pedidoEntero={pedidosCompletados}
+                                    pedidoActual={pedidosMap}
+                                    pedidos={pedidosMap.pedidos} 
+                                    id={pedidosMap.id} 
+                                    hora={pedidosMap.hora} 
+                                    color={"verde"} 
+                                    key={key}
+                                    setPedidoDerecha={setPedidosPendiente}
+                                    setPedidoIzquierda={setpedidosEnproceso}
+                                    PedidoDerecha = {false}
+                                    PedidoIzquierda = {true}
+                                    moverse={moverse}
+                                    ></Pedidos>   
+                            </div>    
+                    ))}
+                </div>
+            ):( <></> )}
+        </div>
+    </div>
+        
+        <footer className="absolute bottom-0 w-full h-fit flex justify-center items-center pb-3 pt-5" >
+            <button>
+            </button>
+        </footer>
+    </div>
+    
+</main>;
+    
 }
+
+export default PantallaRestaurante
+
+
