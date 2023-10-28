@@ -1,0 +1,5 @@
+ nodejs/fetch.js                         |   7 [32m+[m[31m-[m
+ waitless/src/components/footerPopUp.tsx |  34 [32m++[m[31m--[m
+ waitless/src/pages/_app.tsx             |  17 [32m+[m[31m-[m
+ waitless/src/pages/index.tsx            | 283 [32m+++++++++++++++++[m[31m---------------[m
+ 4 files changed, 189 insertions(+), 152 deletions(-)
