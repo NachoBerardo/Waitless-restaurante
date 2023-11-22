@@ -24,7 +24,7 @@ const handleDragEnterBasura = () => { }
 //aca esta la funcionnnn
 const getOrdersByCommand = async (commandId: number, field?: string) => {
     try {
-        const response = await axios.get(`https://perfect-teal-beetle.cyclic.cloud/orderByCustomer/${commandId}`);
+        const response = await axios.get(`https://nice-blue-salamander-sock.cyclic.app/order/${commandId}`);
         if (response.status === 200) {
             const item = response.data;
             if (field) {
@@ -38,6 +38,41 @@ const getOrdersByCommand = async (commandId: number, field?: string) => {
         console.error(error);
     }
 };
+const getFoodIdByOrder = async (orderId: number, field?: string) => {
+    try {
+        const response = await axios.get(`https://nice-blue-salamander-sock.cyclic.app/orderByCustomer/${orderId}`);
+        if (response.status === 200) {
+            const item = response.data;
+            if (field) {
+                const fieldValue = item[field];
+                return fieldValue;
+            } else {
+                return item;
+            }
+        } else { console.log("Item from Order not found"); }
+    } catch (error) {
+        console.error(error);
+    }
+};
+
+const getFoodByFood = async (foodId: number, field?: string) => {
+    try {
+        const response = await axios.get(`https://nice-blue-salamander-sock.cyclic.app/menu/${foodId}`);
+        if (response.status === 200) {
+            const item = response.data;
+            if (field) {
+                const fieldValue = item[field];
+                return fieldValue;
+            } else {
+                return item;
+            }
+        } else { console.log("Item from Order not found"); }
+    } catch (error) {
+        console.error(error);
+    }
+};
+
+const orderId = getOrdersByCommand(1, "id")
 
 const PantallaRestaurante: React.FC = () => {
     const [pedidosPendientes, setPedidosPendiente] = useState<TipoPedido[]>([
