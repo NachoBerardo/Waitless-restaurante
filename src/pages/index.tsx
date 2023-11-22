@@ -28,7 +28,7 @@ const getOrdersByCommand = async (commandId: number, field?: string) => {
         if (response.status === 200) {
             const item = response.data;
             if (field) {
-                const fieldValue = item[field];
+                const fieldValue:number = parseInt(item[field]);
                 return fieldValue;
             } else {
                 return item;
@@ -73,6 +73,7 @@ const getFoodByFood = async (foodId: number, field?: string) => {
 };
 
 const orderId = getOrdersByCommand(1, "id")
+console.log(orderId)
 
 const PantallaRestaurante: React.FC = () => {
     const [pedidosPendientes, setPedidosPendiente] = useState<TipoPedido[]>([
