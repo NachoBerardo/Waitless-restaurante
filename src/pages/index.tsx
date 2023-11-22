@@ -22,67 +22,51 @@ export interface MenuTypes {
 const handleDragEnterBasura = () => { }
 
 //aca esta la funcionnnn
-const getOrdersByCommand = async (commandId: number, field?: string) => {
+const getOrdersByCommand = async (commandId: number): Promise<any> => {
     try {
         const response = await axios.get(`https://nice-blue-salamander-sock.cyclic.app/orderByCommand/${commandId}`);
         if (response.status === 200) {
             const item = response.data;
-            if (field) {
-                const fieldValue: number = parseInt(item[field]);
-                return fieldValue;
-            } else {
-                return item;
-            }
-        } else { console.log("Item from Order not found"); }
+            return item;
+        }
     } catch (error) {
         console.error(error);
+        return null;
     }
 };
-const getFoodIdByOrder = async (orderId: number, field?: string) => {
+const getFoodIdByOrder = async (orderId: number): Promise<any> => {
     try {
         const response = await axios.get(`https://nice-blue-salamander-sock.cyclic.app/orderByCustomer/${orderId}`);
         if (response.status === 200) {
             const item = response.data;
-            if (field) {
-                const fieldValue = item[field];
-                return fieldValue;
-            } else {
-                return item;
-            }
-        } else { console.log("Item from Order not found"); }
+            return item;
+        }
     } catch (error) {
         console.error(error);
+        return null;
     }
 };
 
-const getFoodByFood = async (foodId: number, field?: string) => {
+const getFoodByFood = async (foodId: number): Promise<any> => {
     try {
         const response = await axios.get(`https://nice-blue-salamander-sock.cyclic.app/menu/${foodId}`);
         if (response.status === 200) {
             const item = response.data;
-            if (field) {
-                const fieldValue = item[field];
-                return fieldValue;
-            } else {
-                return item;
-            }
-        } else { console.log("Item from Order not found"); }
+            return item;
+        }
     } catch (error) {
         console.error(error);
+        return null;
     }
 };
 
-getOrdersByCommand(1, "id")
-    .then(data => {
-        if (data !== null) {
-            console.log(`Field Value: ${data}`);
-        }
+getOrdersByCommand(1)
+    .then((orders) => {
+        console.log(orders);
     })
-    .catch(error => {
+    .catch((error) => {
         console.error(error);
     });
-
-console.log("whyyyyyyyyyyyyyyyyy", getOrdersByCommand(1, "id"))
 
 const PantallaRestaurante: React.FC = () => {
     const [pedidosPendientes, setPedidosPendiente] = useState<TipoPedido[]>([
