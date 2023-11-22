@@ -24,11 +24,11 @@ const handleDragEnterBasura = () => { }
 //aca esta la funcionnnn
 const getOrdersByCommand = async (commandId: number, field?: string) => {
     try {
-        const response = await axios.get(`https://nice-blue-salamander-sock.cyclic.app/order/${commandId}`);
+        const response = await axios.get(`https://nice-blue-salamander-sock.cyclic.app/orderByCommand/${commandId}`);
         if (response.status === 200) {
             const item = response.data;
             if (field) {
-                const fieldValue:number = parseInt(item[field]);
+                const fieldValue: number = parseInt(item[field]);
                 return fieldValue;
             } else {
                 return item;
@@ -72,8 +72,17 @@ const getFoodByFood = async (foodId: number, field?: string) => {
     }
 };
 
-const orderId = getOrdersByCommand(1, "id")
-console.log(orderId)
+getOrdersByCommand(1, "id")
+    .then(data => {
+        if (data !== null) {
+            console.log(`Field Value: ${data}`);
+        }
+    })
+    .catch(error => {
+        console.error(error);
+    });
+
+console.log("whyyyyyyyyyyyyyyyyy", getOrdersByCommand(1, "id"))
 
 const PantallaRestaurante: React.FC = () => {
     const [pedidosPendientes, setPedidosPendiente] = useState<TipoPedido[]>([
