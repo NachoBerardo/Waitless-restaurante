@@ -49,6 +49,7 @@ const Pedidos: React.FC<Props> = ({ pedidos, color, key, id, pedidoActual, hora,
                 setPedidoIzquierda(pedidoviejo => [...pedidoviejo, pedidoActual])
                 setPedidoActual(pedidoEntero.filter(item => item.id !== id));  
                 setRotation(false);
+                //state = pendiente
             }
            
         }
@@ -60,7 +61,8 @@ const Pedidos: React.FC<Props> = ({ pedidos, color, key, id, pedidoActual, hora,
                 console.log("entró")
                 setPedidoDerecha(pedidoviejo => [...pedidoviejo, pedidoActual])
                 setRotation(false);
-                setPedidoActual(pedidoEntero.filter(item => item.id !== id));  
+                setPedidoActual(pedidoEntero.filter(item => item.id !== id)); 
+                //state = listo 
             }
         }
     };
@@ -68,6 +70,7 @@ const Pedidos: React.FC<Props> = ({ pedidos, color, key, id, pedidoActual, hora,
     const handleRemoveItem = () => {
         setPedidoActual(pedidoEntero.filter(item => item.id !== id));
                     setRotation(false);
+        //state = eliminado
 
         // console.log(pedidoEntero);
       };
