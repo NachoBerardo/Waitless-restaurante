@@ -68,28 +68,28 @@ getOrdersByCommand(1)
 
 const PantallaRestaurante: React.FC = () => {
     const [pedidosPendientes, setPedidosPendiente] = useState<TipoPedido[]>([
-        { pedidos: ['Empanada', 'Churrasco'], hora: '12:15', id: 1 },
-        { pedidos: ["Empanada", "Provoleta", "Matambre", "Volcan de chocolate"], hora: '12:20', id: 2 },
-        { pedidos: ["Carne", "Churrasco"], hora: '12:25', id: 3 },
-        { pedidos: ["Empanada", "Carne"], hora: '12:30', id: 4 },
-        { pedidos: ["Empanada", "Flan"], hora: '12:35', id: 5 },
-        { pedidos: ["Agua"], hora: '12:40', id: 6 },
-        { pedidos: ["Empanada", "Vegano"], hora: '12:45', id: 7 },
-        { pedidos: ["Provoleta", "Churrasco"], hora: '12:50', id: 8 },
-        { pedidos: ["Empanada", "Churrasco", "Provoleta", "a", "Volcan de chocolate con helado", "Ensalada de papa y huevo"], hora: '12:55', id: 9 },
+        { pedidos: ['Empanada', 'Churrasco'], hora: '12:15', id: 17 },
+        { pedidos: ["Empanada", "Provoleta", "Matambre", "Volcan de chocolate"], hora: '12:20', id: 16 },
+        { pedidos: ["Carne", "Churrasco"], hora: '12:25', id: 14 },
+        { pedidos: ["Empanada", "Carne"], hora: '12:30', id: 13 },
+        { pedidos: ["Empanada", "Flan"], hora: '12:35', id: 12 },
+        { pedidos: ["Agua"], hora: '12:40', id: 11 },
+        { pedidos: ["Empanada", "Vegano"], hora: '12:45', id: 10 },
+        { pedidos: ["Provoleta", "Churrasco"], hora: '12:50', id: 9 },
+        { pedidos: ["Empanada", "Churrasco", "Provoleta", "a", "Volcan de chocolate con helado", "Ensalada de papa y huevo"], hora: '12:55', id: 8 },
     ]);
 
     const [pedidosEnproceso, setpedidosEnproceso] = useState<TipoPedido[]>([
-        { pedidos: ['Provoleta", "Papas fritas'], hora: '1:15', id: 11 },
-        { pedidos: ["Coca", "Helado", "Ensalada de fruta", "Budin de pan", "Volcan de chocolate con helado y dulce de leche aaaaaa"], hora: '1:20', id: 12 },
-        { pedidos: ["Provoleta", "Churrasco"], hora: '1:25', id: 13 },
+        { pedidos: ['Provoleta", "Papas fritas'], hora: '1:15', id: 7 },
+        { pedidos: ["Coca", "Helado", "Ensalada de fruta", "Budin de pan", "Volcan de chocolate con helado y dulce de leche aaaaaa"], hora: '1:20', id: 6 },
+        { pedidos: ["Provoleta", "Churrasco"], hora: '1:25', id: 5 },
     ]);
 
     const [pedidosCompletados, setpedidosCompletados] = useState<TipoPedido[]>([
-        { pedidos: ["Pure", "Milanesa"], hora: '2:15', id: 21 },
-        { pedidos: ["pollo", "Pasto"], hora: '2:20', id: 22 },
-        { pedidos: ["Papas fritas", "Carne al horno"], hora: '2:25', id: 32 },
-        { pedidos: ["a", "b"], hora: '2:30', id: 24 },
+        { pedidos: ["Pure", "Milanesa"], hora: '2:15', id: 4 },
+        { pedidos: ["pollo", "Pasto"], hora: '2:20', id: 3 },
+        { pedidos: ["Papas fritas", "Carne al horno"], hora: '2:25', id: 2 },
+        { pedidos: ["a", "b"], hora: '2:30', id: 1 },
 
     ]);
     const [pendientes, setPendientes] = useState(true);
