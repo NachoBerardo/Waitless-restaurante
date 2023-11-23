@@ -33,6 +33,7 @@ const Pedidos: React.FC<Props> = ({ pedidos, color, key, id, pedidoActual, hora,
 //-------------------------Constantes de rotacion y colores-----------------------------
 
     const [rotation, setRotation] = useState(false);
+    
     const handleClickRotation = () => {
         setRotation(!rotation);
     };
@@ -55,6 +56,7 @@ const Pedidos: React.FC<Props> = ({ pedidos, color, key, id, pedidoActual, hora,
         }
     };
 
+    const precio =[2000, 3600, 7200, 1700]
     const handleClickDerecha = () =>{
         if (PedidoDerecha){
             if(moverse){
@@ -93,7 +95,7 @@ const Pedidos: React.FC<Props> = ({ pedidos, color, key, id, pedidoActual, hora,
                 {pedidos.map((pedido, key)=>(
                 <div className={`z-20 px-4 py-1 flex justify-between items-center ${colorvariants[color][1]} border-t border-black w-full`}>
                     <p className="text-black">{pedido}</p>
-                    <p className="text-black">1000</p>
+                    {id==1?<p className="text-black">1000</p>:<p className="text-black">{precio[key]}</p>}
                 </div>
                 ))}
                 <div className={`z-20 px-4 py-3 flex justify-between items-center ${colorvariants[color][1]} border-t border-black w-full`}>
