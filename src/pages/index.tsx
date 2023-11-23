@@ -46,7 +46,6 @@ const getFoodIdByOrder = async (orderId: number): Promise<any> => {
         return null;
     }
 };
-
 const getFoodByFood = async (foodId: number): Promise<any> => {
     try {
         const response = await axios.get(`https://nice-blue-salamander-sock.cyclic.app/menu/${foodId}`);
@@ -59,7 +58,6 @@ const getFoodByFood = async (foodId: number): Promise<any> => {
         return null;
     }
 };
-
 getOrdersByCommand(1)
     .then((orders) => {
         console.log(orders);
