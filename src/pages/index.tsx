@@ -68,8 +68,8 @@ getOrdersByCommand(1)
 
 const PantallaRestaurante: React.FC = () => {
     const [pedidosPendientes, setPedidosPendiente] = useState<TipoPedido[]>([
-        { pedidos: ['Empanada', 'Churrasco'], hora: '12:15', id: 17 },
         { pedidos: ["Empanada", "Provoleta", "Matambre", "Volcan de chocolate"], hora: '12:20', id: 16 },
+        { pedidos: ['Empanada', 'Churrasco'], hora: '12:15', id: 15 },
         { pedidos: ["Carne", "Churrasco"], hora: '12:25', id: 14 },
         { pedidos: ["Empanada", "Carne"], hora: '12:30', id: 13 },
         { pedidos: ["Empanada", "Flan"], hora: '12:35', id: 12 },
