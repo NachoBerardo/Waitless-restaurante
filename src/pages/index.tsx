@@ -88,8 +88,7 @@ const PantallaRestaurante: React.FC = () => {
     const [pedidosCompletados, setpedidosCompletados] = useState<TipoPedido[]>([
         { pedidos: ["Pure", "Milanesa"], hora: '2:15', id: 4 },
         { pedidos: ["pollo", "Pasto"], hora: '2:20', id: 3 },
-        { pedidos: ["Papas fritas", "Carne al horno"], hora: '2:25', id: 2 },
-        { pedidos: ["a", "b"], hora: '2:30', id: 1 },
+        { pedidos: ["Papas fritas", "Carne al horno"], hora: '2:25', id: 2 }
 
     ]);
     const [pendientes, setPendientes] = useState(true);
